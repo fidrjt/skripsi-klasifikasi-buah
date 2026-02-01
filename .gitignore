@@ -1,0 +1,79 @@
+# ============================================
+# PYTHON & VIRTUAL ENVIRONMENT
+# ============================================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.pyc
+*.pyo
+
+# Virtual Environments - PENTING!!!
+venv/
+env/
+ENV/
+.venv/
+6_app/backend/venv/
+
+# ============================================
+# MODEL FILES (Large files)
+# ============================================
+*.h5
+best_model_phase2.h5
+3_models/*.h5
+
+# ============================================
+# DATASET (Jangan upload dataset mentah!)
+# ============================================
+1_dataset/raw/
+1_dataset/rejected/
+1_dataset/temp_all_photos/
+
+# ============================================
+# IDE & EDITOR
+# ============================================
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# ============================================
+# OS FILES
+# ============================================
+Thumbs.db
+desktop.ini
+.DS_Store
+
+# ============================================
+# LOGS & TEMPORARY
+# ============================================
+*.log
+logs/
+*.tmp
+*.temp
+temp/
+tmp/
+
+# ============================================
+# ENVIRONMENT VARIABLES
+# ============================================
+.env
+.env.local
+.env.production
+
+# ============================================
+# JUPYTER NOTEBOOKS
+# ============================================
+.ipynb_checkpoints/
+*.ipynb
+
+# ============================================
+# BUILD & DISTRIBUTION
+# ============================================
+build/
+dist/
+*.egg-info/
+```

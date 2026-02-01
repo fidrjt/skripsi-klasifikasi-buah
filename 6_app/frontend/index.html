@@ -1,0 +1,1211 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jelajahi Buah Indonesia! 🍇</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Comic Sans MS', 'Segoe UI', Tahoma, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 30px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            color: #ff6b6b;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .mascot {
+            font-size: 80px;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .instruction {
+            background: linear-gradient(135deg, #fff3cd 0%, #ffe082 100%);
+            border: 3px dashed #ffc107;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+            text-align: center;
+            font-size: 1.1em;
+            color: #856404;
+            font-weight: 600;
+        }
+
+        .upload-section {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .upload-btn {
+            flex: 1;
+            min-width: 200px;
+            padding: 25px;
+            font-size: 1.3em;
+            font-weight: bold;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .upload-btn:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+        }
+
+        .upload-btn:active {
+            transform: translateY(-2px);
+        }
+
+        .upload-btn.camera {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .upload-btn.file {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+        }
+
+        .upload-btn .icon {
+            font-size: 2.5em;
+        }
+
+        #imageInput {
+            display: none;
+        }
+
+        #imagePreview {
+            display: none;
+            margin: 30px 0;
+            text-align: center;
+        }
+
+        #imagePreview h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        #imagePreview img {
+            max-width: 100%;
+            max-height: 400px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            border: 5px solid #fff;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            margin: 40px 0;
+        }
+
+        .spinner {
+            border: 8px solid #f3f3f3;
+            border-top: 8px solid #667eea;
+            border-radius: 50%;
+            width: 80px;
+            height: 80px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading p {
+            font-size: 1.2em;
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        #result {
+            display: none;
+            margin-top: 30px;
+            animation: fadeIn 0.5s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .result-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 35px;
+            border-radius: 25px;
+            text-align: center;
+            margin-bottom: 25px;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+        }
+
+        .result-card h2 {
+            font-size: 3.5em;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.2);
+        }
+
+        .result-card .origin {
+            font-size: 1.3em;
+            margin-top: 10px;
+            opacity: 0.95;
+        }
+
+        .confidence-bar {
+            background: rgba(255,255,255,0.2);
+            height: 40px;
+            border-radius: 20px;
+            overflow: hidden;
+            margin: 25px 0;
+            border: 2px solid rgba(255,255,255,0.3);
+        }
+
+        .confidence-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ffd700, #4ade80);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2em;
+            transition: width 1.5s ease-out;
+            box-shadow: inset 0 2px 5px rgba(255,255,255,0.3);
+        }
+
+        .warning {
+            background: #fff3cd;
+            border: 3px solid #ffc107;
+            color: #856404;
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+            display: none;
+            font-weight: 600;
+            font-size: 1.1em;
+        }
+
+        .info-tabs {
+            display: flex;
+            gap: 15px;
+            margin: 25px 0;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .info-tab {
+            flex: 1;
+            min-width: 150px;
+            padding: 18px;
+            background: white;
+            color: #667eea;
+            border: 3px solid #667eea;
+            border-radius: 15px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1.1em;
+            transition: all 0.3s;
+            text-align: center;
+        }
+
+        .info-tab:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .info-tab.active {
+            background: #667eea;
+            color: white;
+            transform: scale(1.05);
+        }
+
+        .info-content {
+            display: none;
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 20px;
+            margin-top: 20px;
+            border: 3px solid #e9ecef;
+        }
+
+        .info-content.active {
+            display: block;
+            animation: slideIn 0.4s;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .info-content h3 {
+            color: #667eea;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        .nutrition-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .nutrition-card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+
+        .nutrition-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .nutrition-card .icon {
+            font-size: 3em;
+            margin-bottom: 15px;
+        }
+
+        .nutrition-card strong {
+            display: block;
+            font-size: 1.2em;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .nutrition-card p {
+            font-size: 0.95em;
+            color: #666;
+            line-height: 1.5;
+        }
+
+        .fun-facts {
+            list-style: none;
+            padding: 0;
+        }
+
+        .fun-facts li {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 15px;
+            border-left: 6px solid #2196f3;
+            font-size: 1.1em;
+            color: #1565c0;
+            font-weight: 600;
+            box-shadow: 0 3px 10px rgba(33, 150, 243, 0.2);
+            transition: transform 0.3s;
+        }
+
+        .fun-facts li:hover {
+            transform: translateX(10px);
+        }
+
+        .map-container {
+            margin-top: 20px;
+            padding: 20px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .map-description {
+            font-size: 1.1em;
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .map-iframe {
+            width: 100%;
+            height: 350px;
+            border-radius: 10px;
+            border: 3px solid #667eea;
+        }
+
+        .reset-btn {
+            display: block;
+            width: 100%;
+            padding: 20px;
+            margin-top: 30px;
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
+            color: white;
+            border: none;
+            border-radius: 15px;
+            font-size: 1.4em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.3);
+        }
+
+        .reset-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(255, 107, 107, 0.4);
+        }
+
+        .reset-btn:active {
+            transform: translateY(-2px);
+        }
+
+        .inference-time {
+            font-size: 0.9em;
+            color: rgba(255,255,255,0.9);
+            margin-top: 10px;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 25px;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .mascot {
+                font-size: 60px;
+            }
+            
+            .upload-section {
+                flex-direction: column;
+            }
+            
+            .result-card h2 {
+                font-size: 2.5em;
+            }
+        }
+        /* ============================================ */
+/* AUDIO SECTION STYLING */
+/* ============================================ */
+
+.audio-section {
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    backdrop-filter: blur(10px);
+}
+
+.audio-buttons {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.audio-btn {
+    flex: 1;
+    min-width: 180px;
+    padding: 20px;
+    border: none;
+    border-radius: 15px;
+    font-size: 1.1em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.audio-btn:active {
+    transform: scale(0.95);
+}
+
+.audio-btn.primary {
+    background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+    color: #333;
+}
+
+.audio-btn.primary:hover {
+    background: linear-gradient(135deg, #ffed4e 0%, #fff59d 100%);
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(255, 215, 0, 0.4);
+}
+
+.audio-btn.primary.playing {
+    background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%);
+    color: white;
+    animation: pulse 1.5s infinite;
+}
+
+.audio-btn.secondary {
+    background: linear-gradient(135deg, #a78bfa 0%, #8b5cf6 100%);
+    color: white;
+}
+
+.audio-btn.secondary:hover {
+    background: linear-gradient(135deg, #c4b5fd 0%, #a78bfa 100%);
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(139, 92, 246, 0.4);
+}
+
+.audio-btn.secondary.playing {
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+    50% {
+        transform: scale(1.05);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    }
+}
+
+.audio-btn .icon {
+    font-size: 2.5em;
+}
+
+.audio-btn .text {
+    font-size: 0.9em;
+    line-height: 1.2;
+}
+
+.audio-controls-row {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.toggle-btn {
+    padding: 12px 24px;
+    background: rgba(255, 255, 255, 0.3);
+    color: white;
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    border-radius: 25px;
+    font-size: 1em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.toggle-btn:hover {
+    background: rgba(255, 255, 255, 0.5);
+    transform: translateY(-2px);
+}
+
+.toggle-btn.active {
+    background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%);
+    border-color: #22c55e;
+}
+
+.toggle-btn.muted {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    border-color: #dc2626;
+}
+
+/* Animasi saat audio loading */
+.audio-loading {
+    position: relative;
+    overflow: hidden;
+}
+
+.audio-loading::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+    animation: loading-shimmer 1.5s infinite;
+}
+
+@keyframes loading-shimmer {
+    to {
+        left: 100%;
+    }
+}
+
+/* Volume indicator */
+.volume-indicator {
+    display: inline-block;
+    font-size: 1.2em;
+    animation: volume-wave 0.8s infinite;
+}
+
+@keyframes volume-wave {
+    0%, 100% { transform: scaleY(1); }
+    50% { transform: scaleY(1.3); }
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+    .audio-buttons {
+        flex-direction: column;
+    }
+    
+    .audio-btn {
+        min-width: 100%;
+    }
+    
+    .audio-controls-row {
+        flex-direction: column;
+    }
+    
+    .toggle-btn {
+        width: 100%;
+        justify-content: center;
+    }
+}
+    </style>
+</head>
+<body>
+    <audio id="audioMatoa" preload="auto">
+        <source src="audio/matoa.mp3" type="audio/mpeg">
+        Browser Anda tidak mendukung audio.
+    </audio>
+    
+    <audio id="audioNamnam" preload="auto">
+        <source src="audio/namnam.mp3" type="audio/mpeg">
+    </audio>
+    
+    <audio id="audioKupa" preload="auto">
+        <source src="audio/kupa.mp3" type="audio/mpeg">
+    </audio>
+    
+    <!-- Syllable Pronunciation Audio -->
+    <audio id="audioMatoaSyllables" preload="auto">
+        <source src="audio/matoa-syllables.mp3" type="audio/mpeg">
+    </audio>
+    
+    <audio id="audioNamnamSyllables" preload="auto">
+        <source src="audio/namnam-syllables.mp3" type="audio/mpeg">
+    </audio>
+    
+    <audio id="audioKupaSyllables" preload="auto">
+        <source src="audio/kupa-syllables.mp3" type="audio/mpeg">
+    </audio>
+    
+    <!-- Sound Effects -->
+    <audio id="soundUpload" preload="auto">
+        <source src="audio/upload.mp3" type="audio/mpeg">
+    </audio>
+    
+    <audio id="soundSuccess" preload="auto">
+        <source src="audio/success.mp3" type="audio/mpeg">
+    </audio>
+    
+    <audio id="soundClick" preload="auto">
+        <source src="audio/click.mp3" type="audio/mpeg">
+    </audio>
+    
+    <!-- Background Music (Optional) -->
+    <audio id="bgMusic" loop preload="auto">
+        <source src="audio/background.mp3" type="audio/mpeg">
+    </audio>
+
+    <div class="container">
+
+    <div class="container">
+        <div class="header">
+            <div class="mascot">🍎</div>
+            <h1>Jelajahi Buah Indonesia!</h1>
+            <p style="font-size: 1.1em; color: #666; margin-top: 10px;">
+                Kenali buah-buahan khas Indonesia Timur dengan AI
+            </p>
+        </div>
+
+        <div class="instruction">
+            🗺️ Ayo kenalan dengan buah-buahan dari Indonesia Timur! <br>
+            Ambil foto atau pilih gambar buah yang ingin kamu ketahui namanya.
+        </div>
+
+        <div class="upload-section">
+            <button class="upload-btn camera" onclick="openCamera()">
+                <span class="icon">📷</span>
+                <span>AMBIL FOTO</span>
+            </button>
+            <button class="upload-btn file" onclick="document.getElementById('imageInput').click()">
+                <span class="icon">📁</span>
+                <span>UPLOAD GAMBAR</span>
+            </button>
+        </div>
+
+        <input type="file" id="imageInput" accept="image/*" onchange="handleImageUpload(event)">
+
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>🔍 Sedang menganalisis gambar...</p>
+        </div>
+
+        <div id="imagePreview">
+            <h3>📸 Gambar yang dipilih:</h3>
+            <img id="previewImg" src="" alt="Preview">
+        </div>
+
+        <div id="result">
+<div class="result-card">
+    <h2 id="fruitName">MATOA</h2>
+    <p class="origin" id="origin">Berasal dari Papua</p>
+    
+    <div class="confidence-bar">
+        <div class="confidence-fill" id="confidenceBar">
+            <span id="confidenceText">95%</span>
+        </div>
+    </div>
+    
+    <p class="inference-time" id="inferenceTime">⚡ Waktu analisis: 142ms</p>
+    
+    <!-- ============================================ -->
+    <!-- AUDIO CONTROLS - TAMBAHAN BARU -->
+    <!-- ============================================ -->
+    <div class="audio-section" style="margin-top: 30px;">
+        <div class="audio-buttons">
+            <button class="audio-btn primary" id="pronounceBtn" onclick="pronounceFruit()">
+                <span class="icon">🔊</span>
+                <span class="text">DENGAR PENGUCAPAN</span>
+            </button>
+            
+            <button class="audio-btn secondary" id="syllableBtn" onclick="pronounceSyllables()">
+                <span class="icon">📝</span>
+                <span class="text">EJA SUKU KATA</span>
+            </button>
+        </div>
+        
+        <div class="audio-controls-row">
+            <button class="toggle-btn" id="soundToggle" onclick="toggleSound()">
+                <span id="soundIcon">🔊</span>
+                <span id="soundText">Suara: ON</span>
+            </button>
+            
+            <button class="toggle-btn" id="musicToggle" onclick="toggleMusic()">
+                <span id="musicIcon">🎵</span>
+                <span id="musicText">Musik: OFF</span>
+            </button>
+        </div>
+    </div>
+</div>
+
+            <div class="warning" id="warning">
+                ⚠️ Tingkat kepercayaan rendah. Coba ambil foto lagi!
+            </div>
+
+            <div class="info-tabs">
+                <button class="info-tab active" onclick="showTab('nutrition', event)">
+                    🥗 Nutrisi
+                </button>
+                <button class="info-tab" onclick="showTab('map', event)">
+                    🗺️ Peta Asal
+                </button>
+                <button class="info-tab" onclick="showTab('facts', event)">
+                    ✨ Fun Facts
+                </button>
+            </div>
+
+            <div class="info-content active" id="nutritionContent">
+                <h3>🥗 Kandungan Nutrisi</h3>
+                <div class="nutrition-grid" id="nutritionGrid"></div>
+            </div>
+
+            <div class="info-content" id="mapContent">
+                <h3>🗺️ Asal Daerah</h3>
+                <div class="map-container">
+                    <p class="map-description" id="mapDescription"></p>
+                    <iframe id="mapFrame" class="map-iframe" frameborder="0"></iframe>
+                </div>
+            </div>
+
+            <div class="info-content" id="factsContent">
+                <h3>✨ Fakta Menarik</h3>
+                <ul class="fun-facts" id="factsList"></ul>
+            </div>
+
+            <button class="reset-btn" onclick="resetApp()">
+                🔄 COBA LAGI
+            </button>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'https://YOUR-APP-NAME.onrender.com/predict';
+        let currentFruit = null;
+
+        function openCamera() {
+            const input = document.getElementById('imageInput');
+            input.setAttribute('capture', 'environment');
+            input.click();
+        }
+
+        function handleImageUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            if (file.size > 5 * 1024 * 1024) {
+                alert('❌ Ukuran file terlalu besar! Maksimal 5MB.');
+                return;
+            }
+                playSound('upload');
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('previewImg').src = e.target.result;
+                document.getElementById('imagePreview').style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+
+            classifyImage(file);
+        }
+
+        async function classifyImage(file) {
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('result').style.display = 'none';
+
+            const formData = new FormData();
+            formData.append('image', file);
+
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+                document.getElementById('loading').style.display = 'none';
+
+                if (data.success) {
+                    displayResult(data);
+                } else {
+                    alert('❌ ' + data.error);
+                }
+            } catch (error) {
+                document.getElementById('loading').style.display = 'none';
+                alert('❌ Tidak dapat terhubung ke server!\n\nPastikan backend sudah berjalan di: http://localhost:5000');
+                console.error(error);
+            }
+        }
+
+        function displayResult(data) {
+            currentFruit = data;
+            playSound('success');
+            document.getElementById('result').style.display = 'block';
+
+            document.getElementById('fruitName').textContent = data.predicted_class.toUpperCase();
+            document.getElementById('origin').textContent = `Berasal dari ${data.fruit_info.origin}`;
+
+            const confidence = data.confidence;
+            const confidenceBar = document.getElementById('confidenceBar');
+            const confidenceText = document.getElementById('confidenceText');
+            
+            setTimeout(() => {
+                confidenceBar.style.width = confidence + '%';
+                confidenceText.textContent = confidence.toFixed(1) + '%';
+            }, 100);
+
+            document.getElementById('inferenceTime').textContent = 
+                `⚡ Waktu analisis: ${data.inference_time_ms.toFixed(0)}ms`;
+
+            const warning = document.getElementById('warning');
+            if (data.warning) {
+                warning.textContent = '⚠️ ' + data.warning;
+                warning.style.display = 'block';
+            } else {
+                warning.style.display = 'none';
+            }
+
+            populateNutrition(data.fruit_info.nutrition);
+            populateMap(data.fruit_info);
+            populateFacts(data.fruit_info.fun_facts);
+
+            showTab('nutrition', null);
+            document.getElementById('result').scrollIntoView({ 
+        behavior: 'smooth', 
+        block: 'start' 
+    });
+        }
+
+        function populateNutrition(nutrition) {
+            const grid = document.getElementById('nutritionGrid');
+            grid.innerHTML = '';
+
+            const icons = {
+                'Vitamin': '💊',
+                'Mineral': '⚡',
+                'Antioksidan': '🛡️',
+                'Serat': '🌾'
+            };
+
+            for (const [key, value] of Object.entries(nutrition)) {
+                const card = document.createElement('div');
+                card.className = 'nutrition-card';
+                card.innerHTML = `
+                    <div class="icon">${icons[key] || '🍎'}</div>
+                    <strong>${key}</strong>
+                    <p>${value}</p>
+                `;
+                grid.appendChild(card);
+            }
+        }
+
+        function populateMap(fruitInfo) {
+            document.getElementById('mapDescription').textContent = fruitInfo.description;
+            
+            const [lat, lng] = fruitInfo.coordinates;
+            const mapFrame = document.getElementById('mapFrame');
+            mapFrame.src = `https://www.openstreetmap.org/export/embed.html?bbox=${lng-1},${lat-1},${lng+1},${lat+1}&layer=mapnik&marker=${lat},${lng}`;
+        }
+
+        function populateFacts(facts) {
+            const list = document.getElementById('factsList');
+            list.innerHTML = '';
+
+            facts.forEach(fact => {
+                const li = document.createElement('li');
+                li.textContent = fact;
+                list.appendChild(li);
+            });
+        }
+
+        function showTab(tabName, event) {
+            document.querySelectorAll('.info-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            document.querySelectorAll('.info-content').forEach(content => {
+                content.classList.remove('active');
+            });
+
+            if (event) {
+                event.target.classList.add('active');
+            } else {
+                document.querySelector('.info-tab').classList.add('active');
+            }
+            
+            document.getElementById(tabName + 'Content').classList.add('active');
+        }
+
+        function resetApp() {
+            stopAllAudio();
+            document.getElementById('imageInput').value = '';
+            document.getElementById('imagePreview').style.display = 'none';
+            document.getElementById('result').style.display = 'none';
+            currentFruit = null;
+
+            playSound('click');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        // ============================================================================
+// AUDIO & SOUND EFFECTS MANAGEMENT
+// ============================================================================
+
+let soundEnabled = true;
+let musicEnabled = false;
+let currentlyPlaying = null;
+
+// Initialize audio settings from localStorage
+window.addEventListener('DOMContentLoaded', function() {
+    const savedSound = localStorage.getItem('soundEnabled');
+    const savedMusic = localStorage.getItem('musicEnabled');
+    
+    if (savedSound !== null) {
+        soundEnabled = savedSound === 'true';
+        updateSoundToggle();
+    }
+    
+    if (savedMusic !== null) {
+        musicEnabled = savedMusic === 'true';
+        if (musicEnabled) {
+            const bgMusic = document.getElementById('bgMusic');
+            bgMusic.volume = 0.15;
+            bgMusic.play();
+        }
+        updateMusicToggle();
+    }
+});
+
+// Main pronunciation function
+function pronounceFruit() {
+    if (!currentFruit || !soundEnabled) return;
+    
+    const fruitName = currentFruit.predicted_class;
+    const audioId = `audio${fruitName}`;
+    const audio = document.getElementById(audioId);
+    const btn = document.getElementById('pronounceBtn');
+    
+    if (!audio) {
+        console.error(`Audio not found: ${audioId}`);
+        alert('⚠️ File audio tidak ditemukan. Pastikan file audio sudah diupload!');
+        return;
+    }
+    
+    // Stop any currently playing audio
+    stopAllAudio();
+    
+    // Reset audio to beginning
+    audio.currentTime = 0;
+    
+    // Visual feedback - button animasi
+    btn.classList.add('playing');
+    btn.innerHTML = `
+        <span class="icon volume-indicator">🔊</span>
+        <span class="text">SEDANG BERBICARA...</span>
+    `;
+    
+    // Play audio
+    currentlyPlaying = audio;
+    audio.play().catch(error => {
+        console.error('Audio play error:', error);
+        alert('⚠️ Tidak bisa memutar audio. Pastikan browser mendukung format MP3.');
+        resetPronounceButton();
+    });
+    
+    // Reset button when audio ends
+    audio.onended = function() {
+        resetPronounceButton();
+        currentlyPlaying = null;
+    };
+    
+    // Error handling
+    audio.onerror = function() {
+        console.error('Audio loading error');
+        alert('⚠️ Gagal memuat file audio. Cek koneksi internet atau file audio.');
+        resetPronounceButton();
+    };
+}
+
+// Syllable pronunciation
+function pronounceSyllables() {
+    if (!currentFruit || !soundEnabled) return;
+    
+    const fruitName = currentFruit.predicted_class;
+    const audioId = `audio${fruitName}Syllables`;
+    const audio = document.getElementById(audioId);
+    const btn = document.getElementById('syllableBtn');
+    
+    if (!audio) {
+        console.error(`Syllable audio not found: ${audioId}`);
+        alert('⚠️ File audio eja suku kata tidak ditemukan!');
+        return;
+    }
+    
+    // Stop any currently playing audio
+    stopAllAudio();
+    
+    // Reset audio
+    audio.currentTime = 0;
+    
+    // Visual feedback
+    btn.classList.add('playing');
+    btn.innerHTML = `
+        <span class="icon">📝</span>
+        <span class="text">SEDANG MENGEJA...</span>
+    `;
+    
+    // Play audio
+    currentlyPlaying = audio;
+    audio.play().catch(error => {
+        console.error('Syllable audio play error:', error);
+        resetSyllableButton();
+    });
+    
+    // Reset button when audio ends
+    audio.onended = function() {
+        resetSyllableButton();
+        currentlyPlaying = null;
+    };
+    
+    audio.onerror = function() {
+        console.error('Syllable audio loading error');
+        alert('⚠️ Gagal memuat file audio suku kata.');
+        resetSyllableButton();
+    };
+}
+
+// Reset pronunciation button
+function resetPronounceButton() {
+    const btn = document.getElementById('pronounceBtn');
+    if (btn) {
+        btn.classList.remove('playing');
+        btn.innerHTML = `
+            <span class="icon">🔊</span>
+            <span class="text">DENGAR PENGUCAPAN</span>
+        `;
+    }
+}
+
+// Reset syllable button
+function resetSyllableButton() {
+    const btn = document.getElementById('syllableBtn');
+    if (btn) {
+        btn.classList.remove('playing');
+        btn.innerHTML = `
+            <span class="icon">📝</span>
+            <span class="text">EJA SUKU KATA</span>
+        `;
+    }
+}
+
+// Stop all currently playing audio
+function stopAllAudio() {
+    if (currentlyPlaying) {
+        currentlyPlaying.pause();
+        currentlyPlaying.currentTime = 0;
+        currentlyPlaying = null;
+    }
+    resetPronounceButton();
+    resetSyllableButton();
+}
+
+// Play sound effects
+function playSound(type) {
+    if (!soundEnabled) return;
+    
+    const soundMap = {
+        'upload': 'soundUpload',
+        'success': 'soundSuccess',
+        'click': 'soundClick'
+    };
+    
+    const audioId = soundMap[type];
+    if (!audioId) return;
+    
+    const audio = document.getElementById(audioId);
+    if (audio) {
+        audio.currentTime = 0;
+        audio.volume = 0.5; // 50% volume untuk sound effects
+        audio.play().catch(error => {
+            console.log('Sound effect play error:', error);
+        });
+    }
+}
+
+// Toggle sound on/off
+function toggleSound() {
+    soundEnabled = !soundEnabled;
+    localStorage.setItem('soundEnabled', soundEnabled);
+    
+    if (!soundEnabled) {
+        stopAllAudio();
+    }
+    
+    updateSoundToggle();
+    playSound('click');
+}
+
+// Update sound toggle button
+function updateSoundToggle() {
+    const btn = document.getElementById('soundToggle');
+    const icon = document.getElementById('soundIcon');
+    const text = document.getElementById('soundText');
+    
+    if (soundEnabled) {
+        btn.classList.add('active');
+        btn.classList.remove('muted');
+        icon.textContent = '🔊';
+        text.textContent = 'Suara: ON';
+    } else {
+        btn.classList.remove('active');
+        btn.classList.add('muted');
+        icon.textContent = '🔇';
+        text.textContent = 'Suara: OFF';
+    }
+}
+
+// Toggle background music
+function toggleMusic() {
+    musicEnabled = !musicEnabled;
+    localStorage.setItem('musicEnabled', musicEnabled);
+    
+    const bgMusic = document.getElementById('bgMusic');
+    
+    if (musicEnabled) {
+        bgMusic.volume = 0.15; // 15% volume untuk background
+        bgMusic.play().catch(error => {
+            console.error('Music play error:', error);
+            musicEnabled = false;
+            updateMusicToggle();
+        });
+    } else {
+        bgMusic.pause();
+    }
+    
+    updateMusicToggle();
+    playSound('click');
+}
+
+// Update music toggle button
+function updateMusicToggle() {
+    const btn = document.getElementById('musicToggle');
+    const icon = document.getElementById('musicIcon');
+    const text = document.getElementById('musicText');
+    
+    if (musicEnabled) {
+        btn.classList.add('active');
+        icon.textContent = '🎵';
+        text.textContent = 'Musik: ON';
+    } else {
+        btn.classList.remove('active');
+        icon.textContent = '🎶';
+        text.textContent = 'Musik: OFF';
+    }
+}
+
+// Add click sound to all buttons
+document.addEventListener('DOMContentLoaded', function() {
+    const buttons = document.querySelectorAll('.upload-btn, .info-tab, .reset-btn');
+    buttons.forEach(button => {
+        button.addEventListener('click', function() {
+            playSound('click');
+        });
+    });
+});
+    </script>
+</body>
+</html>
