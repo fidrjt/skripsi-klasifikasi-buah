@@ -13,21 +13,41 @@ CORS(app)
 # ============================================================================
 # LOAD MODEL
 # ============================================================================
+MODEL_PATH = 'best_model_phase2.h5'
+GOOGLE_DRIVE_FILE_ID = 'https://drive.google.com/file/d/1IQcLEzlARWSvgSKnP06IeL8Ek5iGczuI/view?usp=sharing'  # ← GANTI DENGAN FILE_ID ANDA!
+
+if not os.path.exists(MODEL_PATH):
+    print("="*70)
+    print("MODEL NOT FOUND LOCALLY")
+    print("Downloading model from Google Drive...")
+    print("="*70)
+    
+    try:
+        url = f'https://drive.google.com/uc?id={GOOGLE_DRIVE_FILE_ID}'
+        gdown.download(url, MODEL_PATH, quiet=False)
+        print("\n✓ Model downloaded successfully!")
+    except Exception as e:
+        print(f"\n❌ Error downloading model: {e}")
+        print("Please check your Google Drive file ID and sharing settings.")
+        exit(1)
+
+# ============================================================================
+# LOAD MODEL
+# ============================================================================
+
 print("="*70)
 print("LOADING MODEL...")
 print("="*70)
 
-MODEL_PATH = 'best_model_phase2.h5'
-
-if not os.path.exists(MODEL_PATH):
-    print(f"❌ ERROR: Model tidak ditemukan di {MODEL_PATH}")
-    print("Pastikan Anda sudah download model dari Google Colab!")
+try:
+    model = tf.keras.models.load_model(MODEL_PATH)
+    print(f"✓ Model loaded from: {MODEL_PATH}")
+    print(f"✓ Model input shape: {model.input_shape}")
+    print(f"✓ Model output shape: {model.output_shape}")
+except Exception as e:
+    print(f"❌ Error loading model: {e}")
     exit(1)
 
-model = tf.keras.models.load_model(MODEL_PATH, compile=False)
-print(f"✓ Model loaded from: {MODEL_PATH}")
-print(f"✓ Model input shape: {model.input_shape}")
-print(f"✓ Model output shape: {model.output_shape}")
 print("="*70)
 
 # ============================================================================
