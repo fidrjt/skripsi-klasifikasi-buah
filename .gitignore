@@ -22,7 +22,7 @@ ENV/
 *.h5
 best_model_phase2.h5
 3_models/*.h5
-
+4_scripts/
 # ============================================
 # DATASET (Jangan upload dataset mentah!)
 # ============================================
