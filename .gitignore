@@ -29,7 +29,7 @@ best_model_phase2.h5
 1_dataset/raw/
 1_dataset/rejected/
 1_dataset/temp_all_photos/
-
+1_dataset/processed
 # ============================================
 # IDE & EDITOR
 # ============================================
